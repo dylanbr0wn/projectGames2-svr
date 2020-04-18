@@ -68,8 +68,11 @@ app.get('/search', (req, res) => {
     });
 
 
-
 })
+
+app.get('/', (req, res) => {
+    res.send("hello");
+});
 
 
 app.listen(process.env.PORT || 3000)
