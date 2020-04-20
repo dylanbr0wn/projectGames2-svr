@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const axios = require('axios');
+const compression = require('compression')
+
 
 const instance = axios.create({
     baseURL: "https://api-v3.igdb.com/",
@@ -17,6 +19,7 @@ const app = express()
 app.use(morgan('combined'))
 app.use(bodyParser.json())
 app.use(cors())
+app.use(compression())
 
 
 app.get('/listCover', (req, res) => {
