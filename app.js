@@ -32,7 +32,7 @@ app.get('/listCover', (req, res) => {
 
 app.get('/games', (req, res) => {
     instance.get('games/',{
-        data: `fields name,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres; where version_parent = null & summary != null; limit ${req.query.itemsPerPage}; offset ${req.query.itemsPerPage * (req.query.page - 1)};`
+        data: `fields name,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres; where version_parent = null & summary != null; sort popularity desc; limit ${req.query.itemsPerPage}; offset ${req.query.itemsPerPage * (req.query.page - 1)};`
     }).then(function (response) {
         res.send(response.data);
     }).catch(function (error) {
@@ -58,7 +58,7 @@ app.get('/game/:id', (req, res) => {
 })
 
 app.get('/search', (req, res) => {
-    let query = `search "${req.query.search}"; fields name,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres;limit ${req.query.itemsPerPage}; offset ${req.query.itemsPerPage * (req.query.page - 1)};`
+    let query = `search "${req.query.search}"; fields name,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres;sort popularity desc;limit ${req.query.itemsPerPage}; offset ${req.query.itemsPerPage * (req.query.page - 1)};`
     instance.get('games/',{
         data: query
     }).then(function (response) {
