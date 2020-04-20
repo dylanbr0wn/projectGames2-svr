@@ -21,7 +21,8 @@ app.use(cors())
 
 app.get('/listCover', (req, res) => {
     instance.get('covers/', {
-        data: `fields image_id; where id = (${req.query.coverList.join(',')});`
+        data: `fields image_id; 
+               where id = (${req.query.coverList.join(',')});`
     }).then(function (response) {
 
         res.send(response.data);
@@ -32,7 +33,11 @@ app.get('/listCover', (req, res) => {
 
 app.get('/games', (req, res) => {
     instance.get('games/',{
-        data: `fields name,popularity,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres; where version_parent = null & summary != null; sort popularity desc; limit ${req.query.itemsPerPage}; offset ${req.query.itemsPerPage * (req.query.page - 1)};`
+        data: `fields name,popularity,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres; 
+               where version_parent = null & summary != null; 
+               sort popularity desc; 
+               limit ${req.query.itemsPerPage}; 
+               offset ${req.query.itemsPerPage * (req.query.page - 1)};`
     }).then(function (response) {
         res.send(response.data);
     }).catch(function (error) {
@@ -40,25 +45,11 @@ app.get('/games', (req, res) => {
     });
   })
 
-app.post('/game', (req, res) => {
-    res.send()
-})
-
-app.put('/game/:id', (req, res) => {
-    res.send()
-
-})
-
-app.delete('/game/:id', (req, res) => {
-    res.send()
-})
-
-app.get('/game/:id', (req, res) => {
-    res.send()
-})
-
 app.get('/search', (req, res) => {
-    let query = `search "${req.query.search}"; fields name,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres;limit ${req.query.itemsPerPage}; offset ${req.query.itemsPerPage * (req.query.page - 1)};`
+    let query = `search "${req.query.search}"; 
+                 fields name,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres;
+                 limit ${req.query.itemsPerPage}; 
+                 offset ${req.query.itemsPerPage * (req.query.page - 1)};`
     instance.get('games/',{
         data: query
     }).then(function (response) {
@@ -66,13 +57,10 @@ app.get('/search', (req, res) => {
     }).catch(function (error) {
         console.log(error);
     });
-
-
 })
 
 app.get('/', (req, res) => {
     res.send("hello");
 });
-
 
 app.listen(process.env.PORT || 3000)
