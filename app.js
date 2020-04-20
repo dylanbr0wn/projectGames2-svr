@@ -58,7 +58,7 @@ app.get('/game/:id', (req, res) => {
 })
 
 app.get('/search', (req, res) => {
-    let query = `search "${req.query.search}"; fields name,popularity,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres;sort popularity desc;limit ${req.query.itemsPerPage}; offset ${req.query.itemsPerPage * (req.query.page - 1)};`
+    let query = `search "${req.query.search}"; fields name,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres;limit ${req.query.itemsPerPage}; offset ${req.query.itemsPerPage * (req.query.page - 1)};`
     instance.get('games/',{
         data: query
     }).then(function (response) {
