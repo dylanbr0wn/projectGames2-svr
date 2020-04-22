@@ -62,6 +62,18 @@ app.get('/search', (req, res) => {
     });
 })
 
+app.get('/gameDetails', (req,res) => {
+    let query = `fields *; 
+                 where id = "${req.query.id}";`
+    instance.get('games/', {
+        data: query
+    }).then(function (response) {
+        res.send(response.data);
+    }).catch(function (error) {
+        console.log(error);
+    });
+})
+
 app.get('/', (req, res) => {
     res.send("hello");
 });
