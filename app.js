@@ -34,8 +34,30 @@ app.get('/listCover', (req, res) => {
     });
 })
 
+app.get('/artworks', (req, res) => {
+    instance.get('artworks/', {
+        data: `fields image_id; 
+               where id = (${req.query.artworks.join(',')});`
+    }).then(function (response) {
+        res.send(response.data);
+    }).catch(function (error) {
+        console.log(error);
+    });
+})
+
+app.get('/cover', (req, res) => {
+    instance.get('covers/', {
+        data: `fields image_id; 
+               where id = ${req.query.cover};`
+    }).then(function (response) {
+        res.send(response.data);
+    }).catch(function (error) {
+        console.log(error);
+    });
+})
+
 app.get('/games', (req, res) => {
-    instance.get('games/',{
+    instance.get('games/', {
         data: `fields name,popularity,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres; 
                where version_parent = null & summary != null; 
                sort popularity desc; 
@@ -64,7 +86,47 @@ app.get('/search', (req, res) => {
 
 app.get('/gameDetails', (req,res) => {
     let query = `fields *; 
-                 where id = "${req.query.id}";`
+                 where id = ${req.query.id};`
+    instance.get('games/', {
+        data: query
+    }).then(function (response) {
+        res.send(response.data);
+    }).catch(function (error) {
+        console.log(error);
+    });
+})
+
+app.get('/gameCompanies', (req, res) => {
+    let query = `fields *; 
+                 where id = (${req.query.companyList.join(',')});`
+
+    instance.get('involved_companies/', {
+        data: query
+    }).then(function (response) {
+        res.send(response.data);
+    }).catch(function (error) {
+        console.log(error);
+    });
+})
+
+app.get('/companyNames', (req, res) => {
+    let query = `fields name; 
+                 where id = (${req.query.companyNames.join(',')});`
+
+    instance.get('companies/', {
+        data: query
+    }).then(function (response) {
+        res.send(response.data);
+    }).catch(function (error) {
+        console.log(error);
+    });
+})
+
+app.get('/relatedGames', (req, res) => {
+    let query = `fields name,popularity,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres; 
+               where id = (${req.query.gameList.join(',')}); 
+               sort popularity desc;`
+
     instance.get('games/', {
         data: query
     }).then(function (response) {
