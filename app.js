@@ -136,6 +136,19 @@ app.get('/relatedGames', (req, res) => {
     });
 })
 
+app.get('/getPlatforms', (req, res) => {
+    let query = `fields *; 
+               where id = (${req.query.platforms.join(',')});`
+
+    instance.get('platforms/', {
+        data: query
+    }).then(function (response) {
+        res.send(response.data);
+    }).catch(function (error) {
+        console.log(error);
+    });
+})
+
 app.get('/', (req, res) => {
     res.send("hello");
 });
