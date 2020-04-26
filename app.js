@@ -149,6 +149,36 @@ app.get('/getPlatforms', (req, res) => {
     });
 })
 
+app.get('/ageRatings', (req, res) => {
+    let query = `fields *; 
+               where id = (${req.query.ratings.join(',')});`
+    console.log(query)
+
+    instance.get('age_ratings/', {
+        data: query
+    }).then(function (response) {
+        if ("content_descriptions" in response.data[0]) {
+            let query2 = `fields *; 
+               where id = (${response.data[0].content_descriptions.join(',')});`
+            console.log(query2)
+            instance.get('/age_rating_content_descriptions', {
+                data: query2
+            }).then(function (response2) {
+                console.log("here")
+                response.data[0].content_descriptions = response2.data;
+                res.send(response.data)
+            })
+
+        } else {
+            res.send(response.data)
+        }
+
+
+    }).catch(function (error) {
+        console.log(error);
+    });
+})
+
 app.get('/', (req, res) => {
     res.send("hello");
 });
