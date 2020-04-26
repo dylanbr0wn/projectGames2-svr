@@ -71,11 +71,14 @@ app.get('/games', (req, res) => {
   })
 
 app.get('/search', (req, res) => {
-    let query = `search "${req.query.search}"; 
-                 fields name,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres;
+    let query = `
+                 fields name,release_dates.human,popularity,cover,involved_companies,aggregated_rating,summary,genres;
+                 where name ~*"${req.query.search}"*;
+                 sort popularity desc;
                  limit ${req.query.itemsPerPage}; 
                  offset ${req.query.itemsPerPage * (req.query.page - 1)};`
-    instance.get('games/',{
+    console.log(query)
+    instance.get('games/', {
         data: query
     }).then(function (response) {
         res.send(response.data);
@@ -152,7 +155,6 @@ app.get('/getPlatforms', (req, res) => {
 app.get('/ageRatings', (req, res) => {
     let query = `fields *; 
                where id = (${req.query.ratings.join(',')});`
-    console.log(query)
 
     instance.get('age_ratings/', {
         data: query
@@ -160,7 +162,6 @@ app.get('/ageRatings', (req, res) => {
         if ("content_descriptions" in response.data[0]) {
             let query2 = `fields *; 
                where id = (${response.data[0].content_descriptions.join(',')});`
-            console.log(query2)
             instance.get('/age_rating_content_descriptions', {
                 data: query2
             }).then(function (response2) {
