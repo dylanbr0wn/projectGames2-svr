@@ -58,8 +58,8 @@ app.get('/cover', (req, res) => {
 
 app.get('/games', (req, res) => {
     instance.get('games/', {
-        data: `fields name,popularity,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres; 
-               where version_parent = null & summary != null; 
+        data: `fields name,popularity,cover.image_id,aggregated_rating,genres; 
+               where version_parent = null; 
                sort popularity desc; 
                limit ${req.query.itemsPerPage}; 
                offset ${req.query.itemsPerPage * (req.query.page - 1)};`
@@ -72,7 +72,7 @@ app.get('/games', (req, res) => {
 
 app.get('/search', (req, res) => {
     let query = `
-                 fields name,release_dates.human,popularity,cover,involved_companies,aggregated_rating,summary,genres;
+                 fields name,popularity,cover.image_id,aggregated_rating,genres;
                  where name ~*"${req.query.search}"*;
                  sort popularity desc;
                  limit ${req.query.itemsPerPage}; 
@@ -88,93 +88,12 @@ app.get('/search', (req, res) => {
 })
 
 app.get('/gameDetails', (req,res) => {
-    let query = `fields *; 
+    let query = `fields age_ratings.*,age_ratings.content_descriptions.*,aggregated_rating,aggregated_rating_count,alternative_names.*,artworks.image_id,category,cover.image_id,external_games.*,game_engines.*,game_modes.*,genres.*,hypes,involved_companies.*,involved_companies.company.name,keywords.*,multiplayer_modes.*,name,platforms.name,popularity,rating,rating_count,release_dates.human,screenshots.image_id,similar_games.name,similar_games.cover.image_id,slug,status,storyline,summary,tags,themes.*,url,version_parent; 
                  where id = ${req.query.id};`
     instance.get('games/', {
         data: query
     }).then(function (response) {
         res.send(response.data);
-    }).catch(function (error) {
-        console.log(error);
-    });
-})
-
-app.get('/gameCompanies', (req, res) => {
-    let query = `fields *; 
-                 where id = (${req.query.companyList.join(',')});`
-
-    instance.get('involved_companies/', {
-        data: query
-    }).then(function (response) {
-        res.send(response.data);
-    }).catch(function (error) {
-        console.log(error);
-    });
-})
-
-app.get('/companyNames', (req, res) => {
-    let query = `fields name; 
-                 where id = (${req.query.companyNames.join(',')});`
-
-    instance.get('companies/', {
-        data: query
-    }).then(function (response) {
-        res.send(response.data);
-    }).catch(function (error) {
-        console.log(error);
-    });
-})
-
-app.get('/relatedGames', (req, res) => {
-    let query = `fields name,popularity,release_dates.human,cover,involved_companies,aggregated_rating,summary,genres; 
-               where id = (${req.query.gameList.join(',')}); 
-               sort popularity desc;`
-
-    instance.get('games/', {
-        data: query
-    }).then(function (response) {
-        res.send(response.data);
-    }).catch(function (error) {
-        console.log(error);
-    });
-})
-
-app.get('/getPlatforms', (req, res) => {
-    let query = `fields *; 
-               where id = (${req.query.platforms.join(',')});`
-
-    instance.get('platforms/', {
-        data: query
-    }).then(function (response) {
-        res.send(response.data);
-    }).catch(function (error) {
-        console.log(error);
-    });
-})
-
-app.get('/ageRatings', (req, res) => {
-    let query = `fields *; 
-               where id = (${req.query.ratings.join(',')});`
-
-    instance.get('age_ratings/', {
-        data: query
-    }).then(function (response) {
-        if ("content_descriptions" in response.data[0]) {
-            let query2 = `fields *; 
-               where id = (${response.data[0].content_descriptions.join(',')});`
-            instance.get('/age_rating_content_descriptions', {
-                data: query2
-            }).then(function (response2) {
-                console.log("here")
-                response.data[0].content_descriptions = response2.data;
-                res.send(response.data)
-            })
-
-        } else {
-            res.send(response.data)
-        }
-
-
     }).catch(function (error) {
         console.log(error);
     });
