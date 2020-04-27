@@ -22,40 +22,6 @@ app.use(cors())
 app.use(compression())
 
 
-app.get('/listCover', (req, res) => {
-    instance.get('covers/', {
-        data: `fields image_id; 
-               where id = (${req.query.coverList.join(',')});`
-    }).then(function (response) {
-
-        res.send(response.data);
-    }).catch(function (error) {
-        console.log(error);
-    });
-})
-
-app.get('/artworks', (req, res) => {
-    instance.get('artworks/', {
-        data: `fields image_id; 
-               where id = (${req.query.artworks.join(',')});`
-    }).then(function (response) {
-        res.send(response.data);
-    }).catch(function (error) {
-        console.log(error);
-    });
-})
-
-app.get('/cover', (req, res) => {
-    instance.get('covers/', {
-        data: `fields image_id; 
-               where id = ${req.query.cover};`
-    }).then(function (response) {
-        res.send(response.data);
-    }).catch(function (error) {
-        console.log(error);
-    });
-})
-
 app.get('/games', (req, res) => {
     instance.get('games/', {
         data: `fields name,popularity,cover.image_id,aggregated_rating,genres; 
